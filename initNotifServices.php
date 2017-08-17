@@ -18,7 +18,9 @@
             'userToken' => $userToken,
             'message' => $message 
           );
-          $this->notify($data);
+
+          var_dump($data);
+          // $this->notify($data);
       }
 
 
