@@ -1,22 +1,45 @@
 <?php
 class Util {
 
-    public function sendCurl($url,$type,$headers,$params){
-        $curl=curl_init();
+    private $ch = null;
+    const EXPO_API_URL = 'https://exp.host/--/api/v2/push/send';
 
-        curl_setopt($curl,CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl,CURLOPT_RETURNTRANSFER,1);
-        if(strtoupper($type)=='POST'){
-            curl_setopt($curl,CURLOPT_POST,1);
-            curl_setopt($curl,CURLOPT_POSTFIELDS,$params);
-        }else{
-            $query=http_build_query($params);
-            $url.="?".$query;
-        }
-        curl_setopt($curl,CURLOPT_URL,$url);
-        curl_setopt($curl,CURLOPT_FOLLOWLOCATION,true);
-        $result=curl_exec($curl);
-        curl_close($curl);
-        return $result;
+    public function sendCurl($params){
+        $ch = $this->prepareCurl();
+        curl_setopt($ch, CURLOPT_POSTFIELDS,$params);
+        $response = $this->executeCurl($ch);
+
     }
+
+    private function prepareCurl()
+    {
+        $this->ch = curl_init();
+        if (!$this->ch) {
+            throw new ExpoException('Could not initialise cURL!');
+        }
+
+        $ch = $this->ch;
+        curl_setopt($ch, CURLOPT_URL, self::EXPO_API_URL);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'accept: application/json',
+            'content-type: application/json',
+        ]);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        return $ch;
+    }
+
+    private function executeCurl($ch)
+    {
+        $response = [
+            'body' => curl_exec($ch),
+            'status_code' => curl_getinfo($ch, CURLINFO_HTTP_CODE)
+        ];
+
+        return json_decode($response['body'], true)['data'];
+    }
+
+    
+
 }

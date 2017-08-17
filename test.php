@@ -1,5 +1,5 @@
   <?php
-    $URL_EXPO = "https://exp.host/--/api/v2/push/send";
+    
     include_once('Util.php');
   class InitNotifServices 
   {
@@ -7,40 +7,40 @@
         $header = array(
                   'accept' =>'application/json',
                   'accept-encoding' => 'gzip, deflate',
-                  'content-type'=> 'application/json'
+                  'content-type'=> 'form-data'
                 );
         return $header;
       }
     
       public function init($user,$userToken){
-          $message = "Bonjour ".$user.' on vous enverra désormais un message sur ce mobile à chaque transaction sur votre compte';
-          $data = array(
-            'userToken' => $userToken,
-            'message' => $message 
-          );
-
-          var_dump($data);
-          // $this->notify($data);
+          $message = "Bonjour ".$user;
+          $notification = ['body' =>$message];;
+          $this->notify($userToken, $notification);
       }
 
 
-      public function notify(array $usersData){
+      public function notify($usersData){
+        $URL_EXPO = "https://exp.host/--/api/v2/push/send";
         $utils = new Util();
         $header = $this->getHeaderDefault();
         $type = "POST";
         $params = array();
+        var_dump($usersData);
+        
         foreach ($usersData as $user) {
           $oneUser = array(
-            'to' => $user->userToken,
+            'to' => $user['userToken'],
             'sound' => 'default',
-            'body' => $user->message,
+            'body' => $user['message'],
             'badge'=> 1
           );
           array_push($params, $oneUser);
         }
         $paramsJSON = json_encode($params);
+        var_dump($paramsJSON);
           try{
-            $utils->sendCurl($URL_EXPO,$type, $header, $paramsJSON);
+            $test = $utils->sendCurl($URL_EXPO,$type, $header, $paramsJSON);
+            var_dump($test);
           }catch(Exeption $e){
             echo($e);
           }

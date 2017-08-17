@@ -1,15 +1,16 @@
 <?php
-    include_once('initNotifServices');
+    include_once('NotifServices.php');
 
     if(isset($_POST['token'])){
       
       $user = $_POST['username'];
       $userToken = $_POST['token'];
-      $service = new InitNotifServices();
+      $service = new NotifServices();
       try{
-
-      }catch(Exception $e){
         $service->init($user, $userToken);
+        echo json_encode('successfull');
+      }catch(Exception $e){
+        var_dump($e);
       }
         
 
