@@ -23,7 +23,7 @@ class ServicesDB
 
     public function getToken($connex, $user_id){
         $sql = "select * from expo_token where user_id = :user_id";
-        $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth = $connex->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':user_id' => $user_id));
         $response = $sth->fetchAll();
 
