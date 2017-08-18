@@ -9,7 +9,6 @@ class ServicesDB
 
         try {
             $dbh = new PDO($dsn, $user, $pass);
-            print "Connecté :)";
             return $dbh;
         } catch (PDOException $e) {
             print "Erreur ! : " . $e->getMessage();
