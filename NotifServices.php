@@ -15,13 +15,22 @@
           $connex = $dbservice->initiateConnex();
           $dbservice->insertToken($connex, $userToken, $user);
           $this->notify([$userData]);
-          $dbservice->getAll($connex);
           $dbservice->closeConnex($connex);
+      }
+
+      public function stopNotify($userToken){
+        $dbservice = new ServicesDB();
+        $connex = $dbservice->initiateConnex();
+        try{
+          $dbservice->deleteToken($userToken);
+        }catch(Exception $e){
+          echo('error lors de la déconnexion du compte');
+        }
       }
 
     /**
      * fonction pour notifier une ou plusieurs devices
-     * @example userData : [
+     * @example dictionnaire userData : [
      *    {
      *      userToken : 'ExponentPushToken[5NG-MAH3q7DlrRwZR-rGAq]',
      *      message : 'VOus avez recu tel somme'    
