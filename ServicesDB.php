@@ -26,17 +26,18 @@ class ServicesDB
         $sth->execute(array(':user_id' => $user_id));
         $response = $sth->fetchAll();
 
-        var_dump($response);
         return $response;
     }
 
     public function deleteToken($connex, $token){
-        $sql = "delete from expo_token where token = ".$token;
+        $sql = "DELETE FROM expo_token WHERE token = '".$token."'";
         $count = $connex->exec($sql);
-        if($count == 0){
+        $q = $connex->prepare($sql);
+        $response = $q->execute(array($token));    
+        if($response == 0){
             throw new Exception("le token n'existe pas dans la base");
         }
-        return $count;
+        return $response;
     }
 
     public function insertToken($connex, $token, $user_id){
@@ -51,7 +52,6 @@ class ServicesDB
         $sth = $connex->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute();
         $response = $sth->fetchAll();
-        var_dump($response);
         return $response;
     }
 

@@ -22,9 +22,9 @@
         $dbservice = new ServicesDB();
         $connex = $dbservice->initiateConnex();
         try{
-          $dbservice->deleteToken($connex,$userToken);
+          $nb = $dbservice->deleteToken($connex,$userToken);
         }catch(Exception $e){
-          echo('error lors de la déconnexion du compte');
+          echo($e->message);
         }
       }
 
