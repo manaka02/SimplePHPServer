@@ -33,7 +33,7 @@ class ServicesDB
 
     public function deleteToken($connex, $token){
         $sql = "delete from expo_token where token = ".$token;
-        $count = $dbh->exec($sql);
+        $count = $connex->exec($sql);
         if($count == 0){
             throw new Exception("le token n'existe pas dans la base");
         }
