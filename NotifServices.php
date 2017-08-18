@@ -11,8 +11,12 @@
             'userToken' => $userToken,
             'message' => $message
           );
-
+          $dbservice = new ServicesDB();
+          $connex = $dbservice->initiateConnex();
+          $dbservice->insertToken($connex, $userToken, $user);
           $this->notify([$userData]);
+          $dbservice->getAll($connex);
+          $dbservice->closeConnex($connex);
       }
 
     /**
