@@ -29,6 +29,22 @@ class ServicesDB
         return $response;
     }
 
+    public function updateStatus($connex, $user, $userToken, $newStatus ){
+        $connex->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql="UPDATE expo_token SET connected = :status WHERE user_id = :user AND token = :userToken";
+        try{
+            $req = $connex->prepare($sql);
+            $req->execute(array(
+                'status' => $newStatus,
+                'user' => $user,
+                'userToken' => $userToken));
+    
+            echo $req->rowCount() . " records UPDATED successfully";
+        }catch(Exception $e){
+             var_dump($e);
+        }
+    }
+
     public function deleteToken($connex, $token){
         $sql = "DELETE FROM expo_token WHERE token = '".$token."'";
         $count = $connex->exec($sql);

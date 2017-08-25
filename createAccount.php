@@ -6,8 +6,9 @@
       $user = $_POST['username'];
       $userToken = $_POST['token'];
       $service = new NotifServices();
-      try{
-        $service->init($user, $userToken);
+      try{ 
+        $service->createAccount($user, $userToken);
+        echo json_encode('successfull');
       }catch(Exception $e){
         var_dump($e);
       }

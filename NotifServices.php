@@ -5,8 +5,8 @@
   class NotifServices 
   {
     
-      public function init($user,$userToken){
-          $message = 'Bonjour '.$user;
+      public function createAccount($user,$userToken){
+          $message = 'Compte bien enregistré sous le nom de '.$user;
           $userData = array(
             'userToken' => $userToken,
             'message' => $message
@@ -18,14 +18,28 @@
           $dbservice->closeConnex($connex);
       }
 
-      public function stopNotify($userToken){
+      public function stopNotify($user, $userToken){
         $dbservice = new ServicesDB();
         $connex = $dbservice->initiateConnex();
         try{
-          $nb = $dbservice->deleteToken($connex,$userToken);
+          $nb = $dbservice->updateStatus($connex,$user,$userToken, 0);
         }catch(Exception $e){
           echo($e->message);
         }
+        $dbservice->closeConnex($connex);
+      }
+
+      public function init($user, $userToken){
+        $message = 'Bonjour '.$user;
+        $userData = array(
+          'userToken' => $userToken,
+          'message' => $message
+        );
+        $dbservice = new ServicesDB();
+        $connex = $dbservice->initiateConnex();
+        $dbservice->updateStatus($connex, $user, $userToken, 1);
+        $this->notify([$userData]);
+        $dbservice->closeConnex($connex);
       }
 
     /**
