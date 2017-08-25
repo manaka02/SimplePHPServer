@@ -37,7 +37,7 @@ class Util {
             'status_code' => curl_getinfo($ch, CURLINFO_HTTP_CODE)
         ];
 
-        return json_decode($response['body'], true)['data'];
+        // return json_decode($response['body'], true)['data'];
     }
 
     

@@ -29,6 +29,15 @@ class ServicesDB
         return $response;
     }
 
+    public function getUserWithMobile($connex, $user_id, $token){
+        $sql = "select * from expo_token where user_id = :user_id and token = :token";
+        $sth = $connex->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth->execute(array(':user_id' => $user_id, ':token' => $token));
+        $response = $sth->fetchAll();
+
+        return $response;
+    }
+
 
     public function updateStatus($connex, $user, $userToken, $newStatus ){
         $connex->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -57,10 +66,11 @@ class ServicesDB
         return $response;
     }
 
-    public function insertToken($connex, $token, $user_id){
-        $stmt = $connex->prepare("INSERT INTO expo_token (user_id, token) VALUES (?, ?)");
+    public function insertToken($connex, $token, $user_id, $status){
+        $stmt = $connex->prepare("INSERT INTO expo_token (user_id, token, connected) VALUES (?, ?, ?)");
         $stmt->bindParam(1, $user_id);
         $stmt->bindParam(2, $token);
+        $stmt->bindParam(3, $status);
         $stmt->execute();
     }
 

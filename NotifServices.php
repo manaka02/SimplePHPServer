@@ -20,7 +20,7 @@
       }
     
       public function createAccount($user,$userToken){
-          $message = 'Compte bien enregistré sous le nom de '.$user;
+          $message = 'le compte '.$user.' a été bien enregistré';
           $userData = array(
             'userToken' => $userToken,
             'message' => $message
@@ -29,9 +29,9 @@
           $connex = $dbservice->initiateConnex();
           if($this->userExist($connex, $user)){
             $this ->setHttpHeaders(405);
-            echo ('Nom déjà utilisé');
+            echo "Username already exist";
           }else{
-            $dbservice->insertToken($connex, $userToken, $user);
+            $dbservice->insertToken($connex, $userToken, $user, 1);
             $this->notify([$userData]);
             echo ('successfull');
           }
@@ -58,7 +58,14 @@
         );
         $dbservice = new ServicesDB();
         $connex = $dbservice->initiateConnex();
-        $dbservice->updateStatus($connex, $user, $userToken, 1);
+        $listUser = $dbservice->getUserWithMobile($connex,$user,$userToken);
+        var_dump($listUser);
+        if(count($listUser) == 1){
+          $dbservice->updateStatus($connex, $user, $userToken, 1);
+        }else{
+          $dbservice->insertToken($connex, $userToken, $user, 1);
+        }
+        
         $this->notify([$userData]);
         $dbservice->closeConnex($connex);
       }
