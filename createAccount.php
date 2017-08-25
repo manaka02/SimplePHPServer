@@ -8,9 +8,8 @@
       $service = new NotifServices();
       try{ 
         $service->createAccount($user, $userToken);
-        echo json_encode('successfull');
       }catch(Exception $e){
-        var_dump($e);
+        
       }
         
 

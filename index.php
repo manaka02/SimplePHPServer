@@ -13,7 +13,7 @@
 
 <div class="container">
   <h2>Send notification to someone</h2>
-  <form action="init.php" method = "POST">
+  <form action="createAccount.php" method = "POST">
     <div class="form-group">
       <label for="email">Nom de la personne:</label>
       <input type="text" class="form-control"  placeholder="Enter username" name="username" required>
