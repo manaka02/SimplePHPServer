@@ -75,11 +75,14 @@
      * @example dictionnaire userData : [
      *    {
      *      userToken : 'ExponentPushToken[5NG-MAH3q7DlrRwZR-rGAq]',
-     *      message : 'VOus avez recu tel somme'    
+     *      message : 'VOus avez recu tel somme'  
+     *      data : '{"from":"toavina","amount":25000,"date":"24-08-17 12:00:00","type":"Achat"}'  
      *    },
      *    {
      *      userToken : 'ExponentPushToken[548-MAH3q7rfedRwZR-rGAq]',
-     *      message : 'Vous avez envoyé de l'argent    
+     *      message : 'Vous avez envoyé de l'argent  ,
+     *      'title' => 'nouvelle transaction',
+      *    'data' => '{"from":"toavina","amount":25000,"date":"24-08-17 12:00:00","type":"Achat"}'  
      *    }
      * ]
      *
@@ -95,7 +98,9 @@
             'to' => $user['userToken'],
             'sound' => 'default',
             'body' => $user['message'],
-            'badge'=> 1
+            'badge'=> 1,
+            'title' => 'nouvelle transaction',
+            'data' => '{"from":"toavina","amount":25000,"date":"24-08-17 12:00:00","type":"Achat"}'
           );
           array_push($params, $oneUser);
         }
