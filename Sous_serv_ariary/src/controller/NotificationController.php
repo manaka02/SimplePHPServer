@@ -1,8 +1,8 @@
 <?php
     
-    include_once('utils/Util.php');
+    include_once('utils/Expo_util.php');
     include_once('utils/ServicesDB.php');
-  class NotifServices 
+  class NotificationController 
   {
     private $httpVersion = "HTTP/1.1";
     
@@ -29,6 +29,7 @@
      *    {
      *      userToken : 'ExponentPushToken[5NG-MAH3q7DlrRwZR-rGAq]',
      *      message : 'VOus avez recu tel somme'  
+     *  'title' => 'nouvelle transaction',
      *      data : '{"from":"toavina","amount":25000,"date":"24-08-17 12:00:00","type":"Achat"}'  
      *    },
      *    {
@@ -52,19 +53,74 @@
             'sound' => 'default',
             'body' => $user['message'],
             'badge'=> 1,
-            'title' => 'nouvelle transaction',
-            'data' => '{"from":"toavina","amount":25000,"date":"24-08-17 12:00:00","type":"Achat"}'
+            'title' => $user['title'],
+            'data' => json_encode($user['data'])
           );
           array_push($params, $oneUser);
         }
+
         $paramsJSON = json_encode($params);
+        var_dump($params);
           try{
             $test = $utils->sendCurl($paramsJSON);
           }catch(Exeption $e){
-            echo($e);
+            var_dump($e);
           }
       }
 
+      /**
+       * Synchronisation client app and marchand App
+       *
+       * @return void
+       */
+      public function synchronise($expToken, $id_account, $pseudo){
+        $data = array('type' => 'synchronisation',
+                        'id_account' => $id_account,
+                        'pseudo' => $pseudo
+                      );
+        $dataJson = json_encode($data);
+        $array = array(
+            array(
+                'userToken' => $expToken, 
+                'message' => 'Synchronisation avec le compte de '.$pseudo,
+                'title' => 'Debut de Synchronisation',
+                'data' => $data
+            ));
+
+        $this->notify($array);
+      }
+
+      /**
+       * call after finish synchrone and add token into BDD
+       *
+       * @param string $expToken
+       * @return void
+       */
+      public function finishSynchronisation($expToken){
+        $data = array('type' => 'finishSync' );
+        $array = array(
+            array(
+                'userToken' => $expToken, 
+                'message' => 'Synchronisation efféctuée',
+                'title' => 'Succès',
+                'data' => $data
+            ));
+
+        $this->notify($array);
+      }
+
+      public function Desynchronise($ExpToken){
+        $data = array('type' => 'stopSync' );
+        $array = array(
+            array(
+                'userToken' => $expToken, 
+                'message' => 'La Synchronisation a été coupée',
+                'title' => 'Stop Synchronisation',
+                'data' => $data
+            ));
+
+        $this->notify($array);
+      }
 
       public function getHttpStatusMessage($statusCode){
         $httpStatus = array(

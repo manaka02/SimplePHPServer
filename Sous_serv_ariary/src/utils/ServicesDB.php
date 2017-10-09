@@ -34,6 +34,10 @@ class ServicesDB
         return $response;
     }
 
+    public function removeAccount($connex, $account_id){
+        $sql = '';
+    }
+
     public function getHistory($connex,$account_id){
         $sql = "select * from transaction where 
         sender in (select id_account from account where id_account = :account_id or  father = :account_id)
