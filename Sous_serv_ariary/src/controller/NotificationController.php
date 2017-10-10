@@ -23,6 +23,8 @@
         $dbservice->closeConnex($connex);
     }
 
+    
+
     /**
      * fonction pour notifier une ou plusieurs devices
      * @example dictionnaire userData : [
