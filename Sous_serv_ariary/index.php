@@ -13,7 +13,7 @@
 
 <div class="container">
   <h2>Send notification to someone</h2>
-  <form action="src/beginSync.php" method = "POST">
+  <form action="src/userData.php" method = "POST">
   <div class="form-group">
       <label for="pwd">nom du mobile marchand:</label>
         <input type="text" class="form-control" placeholder="alias" name="alias" required>

@@ -10,8 +10,8 @@ header("Access-Control-Allow-Origin: *");
 include_once 'utils/Util.php';
 include_once 'controller/SimpleRestController.php';
 include_once 'utils/ServicesDB.php';
-class BalanceRestController extends SimpleRestController {
-    public function getBalance($account_id){
+class UserDataController extends SimpleRestController {
+    public function getUserData($account_id){
         $utils = new Util();
         $services = new ServicesDB();
         $data = null;
@@ -28,6 +28,6 @@ class BalanceRestController extends SimpleRestController {
         $this ->setHttpHeaders($requestContentType, $statusCode);
 
         $response = $this->encodeJson($data);
-        echo $response;
+        return $response;
     }
 }

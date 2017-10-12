@@ -21,11 +21,11 @@ class ServicesDB
         $connex=null;
     }
 
-    public function getAccountData($connex, $account_id){
-        $sql = 'select * from account where account_id = :account_id';
-        $sth = $connex->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $sth->execute(array(':account_id' => $account_id));
-        $response = $sth->fetchAll();
+    public function getAccountData($connex, $id_account){
+        $sql = 'select * from account where id_account = :id_account';
+        $sth = $connex->prepare($sql);
+        $sth->execute(array(':id_account' => $id_account));
+        $response = $sth->fetchObject();
         return $response;
     }
 
