@@ -1,12 +1,14 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     09/10/2017 14:21:42                          */
+/* Created on:     12/10/2017 10:27:37                          */
 /*==============================================================*/
 
 
 drop table if exists account;
 
 drop table if exists transaction;
+
+drop table if exists tree;
 
 /*==============================================================*/
 /* Table: account                                               */
@@ -15,7 +17,6 @@ create table account
 (
    id_account           int not null auto_increment,
    pseudo               varchar(50),
-   father               varchar(50),
    idmobile             varchar(100),
    exptoken             varchar(100),
    connected            smallint,
@@ -38,18 +39,26 @@ create table transaction
    primary key (id_transaction)
 );
 
+/*==============================================================*/
+/* Table: tree                                                  */
+/*==============================================================*/
+create table tree
+(
+   id_tree              int not null auto_increment,
+   id_account           int not null,
+   father               int,
+   primary key (id_tree)
+);
+
 alter table transaction add constraint fk_recipient foreign key (recipient)
       references account (id_account) on delete restrict on update restrict;
 
 alter table transaction add constraint fk_sender foreign key (sender)
       references account (id_account) on delete restrict on update restrict;
 
-ALTER TABLE  `account` ADD UNIQUE (
-`exptoken`
-);
+alter table tree add constraint fk_account foreign key (id_account)
+      references account (id_account) on delete restrict on update restrict;
 
-select * from transaction where 
-sender in (select id_account from account where id_account = 3 or  father = 3)
- or recipient in (select id_account from account where id_account = 3 or  father = 3)
-
+alter table tree add constraint fk_pere foreign key (father)
+      references account (id_account) on delete restrict on update restrict;
 

@@ -12,15 +12,37 @@
         header($this->httpVersion. " ". $statusCode ." ". $statusMessage);
     }
 
-    public function stopNotify($account_id){
-        $dbservice = new ServicesDB();
-        $connex = $dbservice->initiateConnex();
+    public function stopNotify($connex, $account_id){
         try{
             $nb = $dbservice->changeStatus($connex,$account_id, 0);
         }catch(Exception $e){
             echo($e->message);
         }
         $dbservice->closeConnex($connex);
+    }
+
+    public function beginSync($expToken,$id_father, $device_id, $alias){
+        $services = new ServicesDB();
+        $connex = $services->initiateConnex();
+
+        $newIdAccount = $services->synchronise($connex, $id_father, $device_id, $expToken, $alias);
+        $myToken = 'azertyhgfdsfzeg65165re1re6g1re6g5e1z65';
+        $data = array(
+            'type' => 'sync',
+                    'id_account' => $newIdAccount,
+                    'token' => $myToken,
+                    'alias' => $alias
+                );
+            $dataJson = json_encode($data);
+            $array = array(
+            array(
+            'userToken' => $expToken, 
+            'message' => 'Synchronisation en cours',
+            'title' => 'Synchronisation',
+            'data' => $data
+            ));
+
+        $this->notify($array);
     }
 
     
@@ -76,7 +98,7 @@
        * @return void
        */
       public function synchronise($expToken, $id_account, $pseudo){
-        $data = array('type' => 'synchronisation',
+        $data = array('type' => 'sync',
                         'id_account' => $id_account,
                         'pseudo' => $pseudo
                       );
@@ -98,7 +120,9 @@
        * @param string $expToken
        * @return void
        */
-      public function finishSynchronisation($expToken){
+      public function finishSynchronise($connex,$expToken, $pseudo,$device_id){
+        $services = new ServicesDB();
+        // $services->setNewAccount($connex,)
         $data = array('type' => 'finishSync' );
         $array = array(
             array(
@@ -107,7 +131,6 @@
                 'title' => 'Succès',
                 'data' => $data
             ));
-
         $this->notify($array);
       }
 
