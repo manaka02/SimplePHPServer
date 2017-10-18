@@ -9,7 +9,7 @@ class ServicesDB
         $dsn='mysql:host=localhost;dbname=usertoken';
 
         try {
-            $dbh = new PDO($dsn, $user, $pass);
+            $dbh = new PDO($dsn, $user, $pass,array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
             return $dbh;
         } catch (PDOException $e) {
             print "Erreur ! : " . $e->getMessage();
@@ -72,7 +72,7 @@ class ServicesDB
 
     public function addNewAccount($connex,$pseudo, $idmobile, $expToken){
        try{
-            $stmt = $connex->prepare("INSERT INTO account (pseudo, idmobile,expToken) VALUES(?,?,?)
+            $stmt = $connex->prepare("INSERT INTO account (pseudo, idmobile,expToken,alias,connected) VALUES(?,?,?,'',1)
             ON DUPLICATE KEY UPDATE connected = 1");
             $stmt->bindParam(1, $pseudo);
             $stmt->bindParam(2, $idmobile);

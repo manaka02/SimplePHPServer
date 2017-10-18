@@ -9,6 +9,21 @@
 class SimpleRestController{
     private $httpVersion = "HTTP/1.1";
 
+    function __construct($protected){
+    	if($protected){
+	    	$tokeninfo = $this->getTokenInfo();
+	    	if(!$tokeninfo || (isset($tokeninfo->active) && !$tokeninfo->active)){
+	    		$statusCode = 401;
+	            $responseJson = array('error'=>'Unauthorized');
+	            $requestContentType = $_SERVER['HTTP_ACCEPT'];
+		        $this ->setHttpHeaders($requestContentType, $statusCode);
+		        $response = $this->encodeJson($responseJson);
+		        echo $response;
+	    		exit();
+	    	}	
+    	}
+    }
+
     public function setHttpHeaders($contentType, $statusCode){
 
         $statusMessage = $this -> getHttpStatusMessage($statusCode);
@@ -66,5 +81,47 @@ class SimpleRestController{
     public function encodeJson($responseData) {
         $jsonResponse = json_encode($responseData);
         return $jsonResponse;
+    }
+
+
+    public function getToken(){
+         if (!function_exists('getallheaders')){ 
+            function getallheaders() 
+            { 
+                   $headers = []; 
+               foreach ($_SERVER as $name => $value) 
+               { 
+                   if (substr($name, 0, 5) == 'HTTP_') 
+                   { 
+                       $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value; 
+                   } 
+               } 
+               return $headers; 
+            } 
+        } 
+        $allHeader = getallheaders();
+        if(isset($allHeader['Authorization'])){
+            $auth_header = $allHeader['Authorization'];
+            $token = explode(' ', $auth_header);
+            if($token[1]){
+                return $token[1];
+            } 
+        }
+        return false;
+    }
+    public function getTokenInfo(){
+        $token = $this->getToken();
+        if($token){
+            $utils = new Util();
+            $params = "";
+            $header = "";
+            $url = 'http://localhost/Oauth2_server/src/oauth/tokeninfo.php?access_token='.$token;
+            $rep = $utils->sendCurl($url, 'get',array(),array() );    
+            $responseJson = json_decode($rep); 
+            return $responseJson;
+        }
+        else{
+            return false;
+        }
     }
 }

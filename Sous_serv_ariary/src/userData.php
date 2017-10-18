@@ -9,7 +9,11 @@ require_once('utils/ServicesDB.php');
         $userServices= new UserDataController();
         $responses = $userServices->getUserData($id_account);
   
+<<<<<<< HEAD
         echo $responses;
+=======
+        echo ($responses);
+>>>>>>> 67809c3f2fb3bc57434ddf2edf4d68e77a7ab23f
     }
 
 

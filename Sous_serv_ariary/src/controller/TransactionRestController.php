@@ -3,6 +3,9 @@ header("Access-Control-Allow-Origin: *");
 include_once 'utils/Util.php';
 include_once 'controller/SimpleRestController.php';
 class TransactionRestController extends SimpleRestController{
+    function __construct(){
+        parent::__construct(true);
+    }
     public function getTransaction($account_id, $filter = null, $skip = 0, $take = 10)
     {
        $utils = new Util();
