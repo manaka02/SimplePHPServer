@@ -11,7 +11,8 @@ class Util {
             curl_setopt($curl,CURLOPT_POSTFIELDS,$params);
         }else{
             $query=http_build_query($params);
-            $url.="?".$query;
+            // var_dump($query);
+            //$url.="?".$query;
         }
         curl_setopt($curl,CURLOPT_URL,$url);
         curl_setopt($curl,CURLOPT_FOLLOWLOCATION,true);

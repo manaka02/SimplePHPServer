@@ -9,7 +9,7 @@ require_once('utils/ServicesDB.php');
         $userServices= new UserDataController();
         $responses = $userServices->getUserData($id_account);
   
-        var_dump($responses);
+        echo ($responses);
     }
 
 
