@@ -17,6 +17,7 @@ class Expo_util {
         if (!$this->ch) {
             throw new ExpoException('Could not initialise cURL!');
         }
+        var_dump('tonga aty ap prepare curl');
 
         $ch = $this->ch;
         curl_setopt($ch, CURLOPT_URL, self::EXPO_API_URL);

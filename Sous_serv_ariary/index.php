@@ -13,14 +13,14 @@
 
 <div class="container">
   <h2>Send notification to someone</h2>
-  <form action="src/getDevices.php" method = "POST">
+  <form action="src/finalSync.php" method = "POST">
   <div class="form-group">
       <label for="pwd">nom du mobile marchand:</label>
         <input type="text" class="form-control" placeholder="alias" name="alias" required>
     </div>
     <div class="form-group">
-      <label for="email">id_account:</label>
-      <input type="text" class="form-control"  placeholder="id_account" name="id_account" required>
+      <label for="email">pseudo:</label>
+      <input type="text" class="form-control"  placeholder="pseudo" name="pseudo" required>
     </div>
     <div class="form-group">
       <label for="pwd">token:</label>

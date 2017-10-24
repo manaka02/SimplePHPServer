@@ -4,9 +4,13 @@ class ServicesDB
 {
     
     public function initiateConnex(){
-        $user='ariary_vola_mg';
-        $pass='mg7R5JU92pwv3f6';
-        $dsn='mysql:host=localhost;dbname=ariary_vola_mg';
+        // $user='ariary_vola_mg';
+        // $pass='mg7R5JU92pwv3f6';
+        // $dsn='mysql:host=localhost;dbname=ariary_vola_mg';
+        $user='root';
+        $pass='root';
+        $dsn='mysql:host=localhost;dbname=usertoken';
+        
 
         try {
             $dbh = new PDO($dsn, $user, $pass,array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
@@ -119,8 +123,8 @@ class ServicesDB
        }
     }
 
-    public function getAllDevices($connex, $code){
-        $sql = 'select * from account where code = :code where connected = 1';
+    public function getAllDevices($connex, $pseudo){
+        $sql = 'select * from account where pseudo = :pseudo and connected = 1';
         $sth = $connex->prepare($sql);
         $sth->execute(array(':code' => $code));
         $response = $sth->fetchAll();

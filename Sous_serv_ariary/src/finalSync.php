@@ -12,7 +12,7 @@ require_once('utils/ServicesDB.php');
         $notif = new NotificationController();
         $services = new ServicesDB();
         $connex = $services->initiateConnex();
-        $responses = $notif->finishSynchronise($connex,$expToken, $pseudo,$device_id);
+        $responses = $notif->init($pseudo, $expToken);
         
         // $responses = $services->setNewAccount($connex, 1,'toavina','expSiemen', 'Siemenes');
         
