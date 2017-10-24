@@ -123,8 +123,8 @@ class ServicesDB
        }
     }
 
-    public function getAllDevices($connex, $pseudo){
-        $sql = 'select * from account where pseudo = :pseudo and connected = 1';
+    public function getAllDevices($connex, $code){
+        $sql = 'select * from account where code = :code and connected = 1';
         $sth = $connex->prepare($sql);
         $sth->execute(array(':code' => $code));
         $response = $sth->fetchAll();

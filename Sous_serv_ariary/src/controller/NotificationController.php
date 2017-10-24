@@ -88,7 +88,6 @@
         $params = array();
         
         foreach ($usersData as $user) {
-            var_dump($user['data']);
             $user['data'] != null
             ? $oneUser = array(
                 'to' => $user['userToken'],
@@ -106,11 +105,9 @@
                 'badge'=> 1,
                 'title' => 'nouvelle transaction'                
               );
-              var_dump($oneUser);
           array_push($params, $oneUser);
         }
         $paramsJSON = json_encode($params);
-        var_dump($paramsJSON);
           try{
             $test = $utils->sendCurl($paramsJSON);
           }catch(Exeption $e){
