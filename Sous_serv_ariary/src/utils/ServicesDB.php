@@ -4,9 +4,9 @@ class ServicesDB
 {
     
     public function initiateConnex(){
-        $user='root';
-        $pass='root';
-        $dsn='mysql:host=localhost;dbname=usertoken';
+        $user='ariary_vola_mg';
+        $pass='mg7R5JU92pwv3f6';
+        $dsn='mysql:host=localhost;dbname=ariary_vola_mg';
 
         try {
             $dbh = new PDO($dsn, $user, $pass,array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
@@ -21,10 +21,13 @@ class ServicesDB
         $connex=null;
     }
 
-    public function getAccountData($connex, $id_account){
-        $sql = 'select * from account where id_account = :id_account';
+    public function getUserData($connex, $pseudo, $expToken){
+        $sql = 'select * from account where pseudo = :pseudo and exptoken = :expToken';
         $sth = $connex->prepare($sql);
-        $sth->execute(array(':id_account' => $id_account));
+        $sth->execute(array(
+            ':pseudo' => $pseudo,
+            ':expToken' => $expToken
+        ));
         $response = $sth->fetchObject();
         return $response;
     }
@@ -49,7 +52,7 @@ class ServicesDB
     {
         try{
             $stmt = $connex->prepare("INSERT INTO account (pseudo, idmobile,exptoken,alias, connected) select pseudo, :idmobile, :exptoken,:alias, connected from account where id_account = :id_account
-            ON DUPLICATE KEY UPDATE connected = 1 and alias = :alias");
+            ON DUPLICATE KEY UPDATE connected = 1,  alias = :alias");
             $stmt->bindParam('id_account', $id_father);
             $stmt->bindParam('idmobile', $idmobile);
             $stmt->bindParam('exptoken',$exptoken);
@@ -98,10 +101,10 @@ class ServicesDB
        }
     }
 
-    public function getAllDevices($connex, $id_account){
-        $sql = 'select * from account where id_account in (select id_account from tree where father = 1)';
+    public function getAllDevices($connex, $pseudo){
+        $sql = 'select * from account where pseudo = :pseudo';
         $sth = $connex->prepare($sql);
-        $sth->execute(array(':id_account' => $id_account));
+        $sth->execute(array(':pseudo' => $pseudo));
         $response = $sth->fetchAll();
         return $response;
     }
