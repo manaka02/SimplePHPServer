@@ -73,20 +73,37 @@ class ServicesDB
        }
     }
 
-    public function addNewAccount($connex,$pseudo, $idmobile, $expToken){
-       try{
-            $stmt = $connex->prepare("INSERT INTO account (pseudo, idmobile,expToken,alias,connected) VALUES(?,?,?,'',1)
+    public function addNewAccount($connex,$pseudo, $idmobile, $expToken)
+    {
+        try{
+            $stmt = $connex->prepare("INSERT INTO account (pseudo, idmobile,exptoken,alias, connected) select :pseudo, :idmobile, :expToken,:alias, connected from account where pseudo = :pseudo and exptoken = :expToken 
             ON DUPLICATE KEY UPDATE connected = 1");
-            $stmt->bindParam(1, $pseudo);
-            $stmt->bindParam(2, $idmobile);
-            $stmt->bindParam(3, $expToken);
-            $req = $stmt->execute();
-            return $connex->lastInsertId(); 
-       }catch(PDOExecption  $e){
+                    $stmt->bindParam('pseudo', $pseudo);
+                    $stmt->bindParam('alias', $pseudo);
+                    $stmt->bindParam('idmobile', $idmobile);
+                    $stmt->bindParam('expToken', $expToken);
+                    $req = $stmt->execute();
+                    return $connex->lastInsertId(); 
+        }catch(PDOExecption  $e){
             echo "Error!: " . $e->getMessage() . "</br>"; 
             throw $e;
        }
     }
+
+    // public function addNewAccount($connex,$pseudo, $idmobile, $expToken){
+    //    try{
+    //         $stmt = $connex->prepare("INSERT INTO account (pseudo, idmobile,expToken,alias,connected) VALUES(?,?,?,'',1)
+    //         ON DUPLICATE KEY UPDATE connected = 1");
+    //         $stmt->bindParam(1, $pseudo);
+    //         $stmt->bindParam(2, $idmobile);
+    //         $stmt->bindParam(3, $expToken);
+    //         $req = $stmt->execute();
+    //         return $connex->lastInsertId(); 
+    //    }catch(PDOExecption  $e){
+    //         echo "Error!: " . $e->getMessage() . "</br>"; 
+    //         throw $e;
+    //    }
+    // }
 
     public function addNewTree($connex, $id_account, $father){
         try{
@@ -102,7 +119,7 @@ class ServicesDB
     }
 
     public function getAllDevices($connex, $pseudo){
-        $sql = 'select * from account where pseudo = :pseudo';
+        $sql = 'select * from account where pseudo = :pseudo where connected = 1';
         $sth = $connex->prepare($sql);
         $sth->execute(array(':pseudo' => $pseudo));
         $response = $sth->fetchAll();
