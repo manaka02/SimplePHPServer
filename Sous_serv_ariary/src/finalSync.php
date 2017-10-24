@@ -16,7 +16,7 @@ require_once('utils/ServicesDB.php');
         
         // $responses = $services->setNewAccount($connex, 1,'toavina','expSiemen', 'Siemenes');
         
-        var_dump($responses);
+        echo $responses;
     }
 
 

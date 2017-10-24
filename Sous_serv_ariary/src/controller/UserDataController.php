@@ -97,4 +97,22 @@ class UserDataController extends SimpleRestController {
         echo $this->encodeJson($response);
     }
 
+    public function getAllDevices($id_account){
+        $utils = new Util();
+        $services = new ServicesDB();
+        $data = null;
+        $statusCode = 200;
+        try{
+            $connex = $services->initiateConnex();
+            $data = $services->getAllDevices($connex, $id_account);
+            $services->closeConnex($connex);
+        }catch (PDOException $e) {
+            $statusCode = 404;
+            $response = $responseJson;
+        }
+        $requestContentType = $_SERVER['HTTP_ACCEPT'];
+        $this ->setHttpHeaders($requestContentType, $statusCode);
+        $response = $this->encodeJson($data);
+        return $response;
+    }
 }

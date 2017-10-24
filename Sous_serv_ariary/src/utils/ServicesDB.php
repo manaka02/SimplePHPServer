@@ -49,7 +49,7 @@ class ServicesDB
     {
         try{
             $stmt = $connex->prepare("INSERT INTO account (pseudo, idmobile,exptoken,alias, connected) select pseudo, :idmobile, :exptoken,:alias, connected from account where id_account = :id_account
-            ON DUPLICATE KEY UPDATE connected = 1");
+            ON DUPLICATE KEY UPDATE connected = 1 and alias = :alias");
             $stmt->bindParam('id_account', $id_father);
             $stmt->bindParam('idmobile', $idmobile);
             $stmt->bindParam('exptoken',$exptoken);
@@ -96,6 +96,14 @@ class ServicesDB
             echo "Error!: " . $e->getMessage() . "</br>"; 
             throw $e;
        }
+    }
+
+    public function getAllDevices($connex, $id_account){
+        $sql = 'select * from account where id_account in (select id_account from tree where father = 1)';
+        $sth = $connex->prepare($sql);
+        $sth->execute(array(':id_account' => $id_account));
+        $response = $sth->fetchAll();
+        return $response;
     }
 
    

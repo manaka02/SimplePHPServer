@@ -21,16 +21,15 @@
         $dbservice->closeConnex($connex);
     }
 
-    public function beginSync($expToken,$id_father, $device_id, $alias){
+    public function beginSync($expToken,$id_father, $device_id, $alias, $refresh_token){
         $services = new ServicesDB();
         $connex = $services->initiateConnex();
 
         $newIdAccount = $services->synchronise($connex, $id_father, $device_id, $expToken, $alias);
-        $myToken = 'azertyhgfdsfzeg65165re1re6g1re6g5e1z65';
         $data = array(
             'type' => 'sync',
                     'id_account' => $newIdAccount,
-                    'token' => $myToken,
+                    'refresh_token' => $refresh_token,
                     'alias' => $alias
                 );
             $dataJson = json_encode($data);

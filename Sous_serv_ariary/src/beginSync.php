@@ -9,9 +9,10 @@ require_once('utils/ServicesDB.php');
         $id_account =  $_POST['id_account'];
         $device_id =  $_POST['device_id'];
         $alias =  $_POST['alias'];
+        $refresh_token = $_GET['refresh_token'];
 
         $notif = new NotificationController();
-        $responses = $notif->beginSync($expToken, $id_account,$device_id, $alias);
+        $responses = $notif->beginSync($expToken, $id_account,$device_id, $alias, $refresh_token);
   
         var_dump($responses);
     }
