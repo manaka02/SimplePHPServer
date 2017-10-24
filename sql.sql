@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   `exptoken` varchar(100) NOT NULL,
   `connected` smallint(6) NOT NULL,
   PRIMARY KEY (`id_account`),
-  UNIQUE KEY `uq_unike_account` (`pseudo`,`exptoken`)
+  UNIQUE KEY `uq_unike_account` (`code`,`exptoken`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf32 AUTO_INCREMENT=14 ;
 
 --

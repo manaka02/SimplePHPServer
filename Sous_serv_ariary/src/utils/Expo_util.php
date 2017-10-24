@@ -1,5 +1,5 @@
 <?php
-class Util {
+class Expo_util {
 
     private $ch = null;
     const EXPO_API_URL = 'https://exp.host/--/api/v2/push/send';
