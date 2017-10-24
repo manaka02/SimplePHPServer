@@ -37,16 +37,40 @@ class TransactionRestController extends SimpleRestController{
         $notifService = new NotificationController();
         $dbservice = new ServicesDB();
         $pdo = $dbservice->initiateConnex();
-        $sender_device_token = $dbservice->getToken($pdo, $sender_id);
-        $recipient_device_token = $dbservice->getToken($pdo, $recipient_id);
-        $user_data = [array(
-            'userToken' => $sender_device_token,
-            'message'   => "Vous avez envoye envoyer ".$amount." ".$currency." à ".$recipient_id
-        ),array(
-            'userToken' => $sender_device_token,//$recipient_device_token,
-            'message'   => "Vous avez réçu "+$amount+"  "+$currency+" de "+$sender_id
-        )];
-        $notifService->notify($user_data);
+        $sender_device_token = $dbservice->getAllDevices($pdo, $sender_id);
+        $recipient_device_token = $dbservice->getAllDevices($pdo, $recipient_id);
+        $data_envoie = array(
+            "from"=>$sender_id,
+            "amount"=>$amount,
+            "date"=>date("YYYY-m-d H:i:s"),
+            "type"=>"envoie"
+        );
+        $data_reception = array(
+            "from"=>$sender_id,
+            "amount"=>$amount,
+            "date"=>date("YYYY-m-d H:i:s"),
+            "type"=>"reception"
+        );
+
+        foreach ($sender_device_token as $key) {
+            $user_data = [array(
+                'userToken' => $key['token'],
+                'message'   => "Vous avez envoye envoyer ".$amount." ".$currency." à ".$recipient_id,
+                'title' => "Envoi d'argent",
+                'data' => json_encode($data_envoie)
+            )];
+            $notifService->notify($user_data);
+        }
+
+        foreach ($recipient_device_token as $key) {
+            $user_data_2 = [array(
+                'userToken' => $key['token'],
+                'message'   => "Vous avez réçu ".$amount." ".$currency." de ".$sender_id,
+                'title' => "Reception d'argent",
+                'data' => json_encode($data_reception)
+            )];
+            $notifService->notify($user_data_2);
+        }
     }
     public function addRemoteTransaction($sender_id, $recipient_id, $amount, $currency, $comment){
         $utils = new Util();

@@ -51,7 +51,7 @@ class ServicesDB
     public function addNewAccountWithIdFather($connex,$id_father, $idmobile, $exptoken, $alias )
     {
         try{
-            $stmt = $connex->prepare("INSERT INTO account (pseudo, idmobile,exptoken,alias, connected) select pseudo, :idmobile, :exptoken,:alias, connected from account where id_account = :id_account
+            $stmt = $connex->prepare("INSERT INTO account (pseudo, code, idmobile,exptoken,alias, connected) select pseudo,code, :idmobile,  :exptoken,:alias, connected from account where id_account = :id_account
             ON DUPLICATE KEY UPDATE connected = 1,  alias = :alias");
             $stmt->bindParam('id_account', $id_father);
             $stmt->bindParam('idmobile', $idmobile);
@@ -73,12 +73,13 @@ class ServicesDB
        }
     }
 
-    public function addNewAccount($connex,$pseudo, $idmobile, $expToken)
+    public function addNewAccount($connex,$pseudo,$code, $idmobile, $expToken)
     {
         try{
-            $stmt = $connex->prepare("INSERT INTO account (pseudo, idmobile,exptoken,alias, connected) select :pseudo, :idmobile, :expToken,:alias, connected from account where pseudo = :pseudo and exptoken = :expToken 
+            $stmt = $connex->prepare("INSERT INTO account (pseudo,code,  idmobile,exptoken,alias, connected) select :pseudo, :idmobile, :expToken,:alias, connected from account where pseudo = :pseudo and exptoken = :expToken 
             ON DUPLICATE KEY UPDATE connected = 1");
                     $stmt->bindParam('pseudo', $pseudo);
+                    $stmt->bindParam('code', $code);
                     $stmt->bindParam('alias', $pseudo);
                     $stmt->bindParam('idmobile', $idmobile);
                     $stmt->bindParam('expToken', $expToken);
@@ -118,10 +119,10 @@ class ServicesDB
        }
     }
 
-    public function getAllDevices($connex, $pseudo){
-        $sql = 'select * from account where pseudo = :pseudo where connected = 1';
+    public function getAllDevices($connex, $code){
+        $sql = 'select * from account where code = :code where connected = 1';
         $sth = $connex->prepare($sql);
-        $sth->execute(array(':pseudo' => $pseudo));
+        $sth->execute(array(':code' => $code));
         $response = $sth->fetchAll();
         return $response;
     }
