@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Jeu 12 Octobre 2017 à 14:01
+-- Généré le: Mar 24 Octobre 2017 à 06:38
 -- Version du serveur: 5.6.11-log
 -- Version de PHP: 5.4.15
 
@@ -30,30 +30,32 @@ USE `usertoken`;
 
 CREATE TABLE IF NOT EXISTS `account` (
   `id_account` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(50) NOT NULL,
   `pseudo` varchar(50) NOT NULL,
   `alias` varchar(60) NOT NULL,
   `idmobile` varchar(100) NOT NULL,
   `exptoken` varchar(100) NOT NULL,
   `connected` smallint(6) NOT NULL,
   PRIMARY KEY (`id_account`),
-  UNIQUE KEY `exptoken` (`exptoken`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf32 AUTO_INCREMENT=13 ;
+  UNIQUE KEY `uq_unike_account` (`pseudo`,`exptoken`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf32 AUTO_INCREMENT=14 ;
 
 --
 -- Contenu de la table `account`
 --
 
-INSERT INTO `account` (`id_account`, `pseudo`, `alias`, `idmobile`, `exptoken`, `connected`) VALUES
-(1, 'toavina', 'toavina', 'sony', 'expSony', 0),
-(2, 'miora', 'miora', 'zte', 'expZTE', 1),
-(4, 'toavina', 'marchand2', 'sonyoooh', 'expSonnyyy', 1),
-(5, 'toavina', 'mrchand3', 'snny', 'espsony', 1),
-(7, 'miora', 'mrchand1', '', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9R7]', 1),
-(8, 'toavina', 'marchnd4', 'sony4', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9RFG]', 0),
-(9, 'toavina', 'marchand5', 'sony2', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9R4]', 0),
-(12, 'toavina', 'caisse3', 'sonyXperia ZR', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9Ro]', 1),
-(10, 'toavina', 'caisse1', 'sony', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9RFGsdfg]', 0),
-(11, 'toavina', 'caisse2', 'sony2', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9R4df]', 0);
+INSERT INTO `account` (`id_account`, `code`, `pseudo`, `alias`, `idmobile`, `exptoken`, `connected`) VALUES
+(1, 'AA027', 'toavina', 'hasina', 'sony', 'expSony', 1),
+(2, 'AA027', 'miora', 'miora', 'zte', 'expZTE', 1),
+(4, 'AA001', 'toavina', 'marchand2', 'sonyoooh', 'expSonnyyy', 1),
+(5, 'AA012', 'toavina', 'mrchand3', 'snny', 'espsony', 1),
+(7, 'AA027', 'miora', 'mrchand1', '', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9R7]', 1),
+(8, 'AA027', 'toavina', 'marchnd4', 'sony4', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9RFG]', 0),
+(9, 'AA027', 'toavina', 'marchand5', 'sony2', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9R4]', 0),
+(12, 'AA027', 'toavina', 'caisse3', 'sonyXperia ZR', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9Ro]', 1),
+(10, 'AA027', 'toavina', 'caisse1', 'sony', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9RFGsdfg]', 0),
+(11, 'AA027', 'toavina', 'caisse2', 'sony2', 'ExponentPushToken[Ry2QvANEDLZLfcwRQnd9R4df]', 0),
+(13, 'AA027', 'toavina', 'Caisse 7', 'CSS05', 'ExponentPushToken[83D9aJCoDivkqZzPSKL7v8]', 1);
 
 -- --------------------------------------------------------
 
@@ -116,20 +118,22 @@ CREATE TABLE IF NOT EXISTS `tree` (
   PRIMARY KEY (`id_tree`),
   KEY `fk_account` (`id_account`),
   KEY `fk_pere` (`father`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf32 AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf32 AUTO_INCREMENT=10 ;
 
 --
 -- Contenu de la table `tree`
 --
 
 INSERT INTO `tree` (`id_tree`, `id_account`, `father`) VALUES
-(1, 11, 1),
-(2, 12, 1),
-(3, 12, 1),
-(4, 12, 1),
-(5, 12, 1),
-(6, 12, 1),
-(7, 12, 1);
+(1, 4, 1),
+(2, 5, 1),
+(3, 8, 1),
+(4, 9, 1),
+(5, 10, 1),
+(6, 11, 1),
+(7, 7, 2),
+(8, 13, 1),
+(9, 13, 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
