@@ -14,7 +14,7 @@ class SimpleRestController{
 	    	$tokeninfo = $this->getTokenInfo();
 	    	if(!$tokeninfo || (isset($tokeninfo->active) && !$tokeninfo->active)){
 	    		$statusCode = 401;
-	            $responseJson = array('error'=>'Unauthorized');
+	            $responseJson = array('error'=>'Unauthorized','error_description'=>"The token is no longer valide or have been invalidated");
 	            $requestContentType = $_SERVER['HTTP_ACCEPT'];
 		        $this ->setHttpHeaders($requestContentType, $statusCode);
 		        $response = $this->encodeJson($responseJson);
@@ -102,10 +102,9 @@ class SimpleRestController{
         $allHeader = getallheaders();
         if(isset($allHeader['Authorization'])){
             $auth_header = $allHeader['Authorization'];
-            $token = explode(' ', $auth_header);
-            if($token[1]){
-                return $token[1];
-            } 
+            $token = str_replace(' ', '', $auth_header);
+            $rep = str_replace("Bearer", "", $token);
+            return $rep; 
         }
         return false;
     }
@@ -116,7 +115,7 @@ class SimpleRestController{
             $params = "";
             $header = "";
             $url = 'http://localhost/Oauth2_server/src/oauth/tokeninfo.php?access_token='.$token;
-            $rep = $utils->sendCurl($url, 'get',array(),array() );    
+            $rep = $utils->sendCurl($url, 'get',array(),array() );  
             $responseJson = json_decode($rep); 
             return $responseJson;
         }

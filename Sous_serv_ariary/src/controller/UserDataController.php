@@ -38,7 +38,7 @@ class UserDataController extends SimpleRestController {
         }
         else{
             $statusCode = 401;
-            $response = array('error'=>'Unauthorized');
+            $response = array('error'=>'Unauthorized','error_description'=>"The token is no longer valide or have been invalidated");
         }
         $requestContentType = $_SERVER['HTTP_ACCEPT'];
         $this ->setHttpHeaders($requestContentType, $statusCode);

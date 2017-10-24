@@ -2,6 +2,8 @@
 header("Access-Control-Allow-Origin: *");
 include_once 'utils/Util.php';
 include_once 'controller/SimpleRestController.php';
+include_once 'controller/NotificationController.php';
+include_once 'utils/ServicesDB.php';
 class TransactionRestController extends SimpleRestController{
     function __construct(){
         parent::__construct(true);
@@ -30,7 +32,21 @@ class TransactionRestController extends SimpleRestController{
         $resultRemote = $this->addRemoteTransaction($sender_id, $recipient_id, $amount, $currency, $comment);
         $requestContentType = $_SERVER['HTTP_ACCEPT'];
         $this ->setHttpHeaders($requestContentType, $resultRemote['statusCode']);
+
         echo json_encode($resultRemote['response']);
+        $notifService = new NotificationController();
+        $dbservice = new ServicesDB();
+        $pdo = $dbservice->initiateConnex();
+        $sender_device_token = $dbservice->getToken($pdo, $sender_id);
+        $recipient_device_token = $dbservice->getToken($pdo, $recipient_id);
+        $user_data = [array(
+            'userToken' => $sender_device_token,
+            'message'   => "Vous avez envoye envoyer ".$amount." ".$currency." à ".$recipient_id
+        ),array(
+            'userToken' => $sender_device_token,//$recipient_device_token,
+            'message'   => "Vous avez réçu "+$amount+"  "+$currency+" de "+$sender_id
+        )];
+        $notifService->notify($user_data);
     }
     public function addRemoteTransaction($sender_id, $recipient_id, $amount, $currency, $comment){
         $utils = new Util();
