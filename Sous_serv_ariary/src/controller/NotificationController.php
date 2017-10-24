@@ -12,6 +12,28 @@
         header($this->httpVersion. " ". $statusCode ." ". $statusMessage);
     }
 
+    public function init($user, $userToken){
+        $data = [
+            'from' => 'Hasina',
+            'amount' => 25000,
+            'date' => "24-08-17 12:00:00",
+            'type' => 'Achat'
+        ];
+        $dataJSON = json_encode($data);
+        $message = 'Bonjour '.$user;
+        $userData = array(
+          'userToken' => $userToken,
+          'message' => $message,
+          'title' => 'Synchronisation',
+          'data' => null
+        );
+        $dbservice = new ServicesDB();
+        $connex = $dbservice->initiateConnex();
+        $listUser = $dbservice->getAllDevices($connex,$user);
+        $this->notify([$userData]);
+        $dbservice->closeConnex($connex);
+      }
+
     public function stopNotify($connex, $account_id){
         try{
             $nb = $dbservice->changeStatus($connex,$account_id, 0);
@@ -40,6 +62,7 @@
             'title' => 'Synchronisation',
             'data' => $data
             ));
+            
 
         $this->notify($array);
     }
@@ -66,28 +89,38 @@
      * @param [type] $userData
      * @return void
      */
-      public function notify($usersData){
-        $utils = new Util();
+    public function notify($usersData){
+        $utils = new Expo_util();
         $params = array();
         
         foreach ($usersData as $user) {
-          $oneUser = array(
-            'to' => $user['userToken'],
-            'sound' => 'default',
-            'body' => $user['message'],
-            'badge'=> 1,
-            'title' => $user['title'],
-            'data' => json_encode($user['data'])
-          );
+            var_dump($user['data']);
+            $user['data'] != null
+            ? $oneUser = array(
+                'to' => $user['userToken'],
+                'sound' => 'default',
+                'body' => $user['message'],
+                'badge'=> 1,
+                'title' => 'nouvelle transaction',
+                'data' =>  $user['data']
+                
+              )
+            : $oneUser = array(
+                'to' => $user['userToken'],
+                'sound' => 'default',
+                'body' => $user['message'],
+                'badge'=> 1,
+                'title' => 'nouvelle transaction'                
+              );
+              var_dump($oneUser);
           array_push($params, $oneUser);
         }
-
         $paramsJSON = json_encode($params);
-        var_dump($params);
+        var_dump($paramsJSON);
           try{
             $test = $utils->sendCurl($paramsJSON);
           }catch(Exeption $e){
-            var_dump($e);
+            echo($e);
           }
       }
 

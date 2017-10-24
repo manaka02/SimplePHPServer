@@ -1,5 +1,5 @@
 <?php
-class Util {
+class Expo_util {
 
     private $ch = null;
     const EXPO_API_URL = 'https://exp.host/--/api/v2/push/send';
@@ -17,6 +17,7 @@ class Util {
         if (!$this->ch) {
             throw new ExpoException('Could not initialise cURL!');
         }
+        var_dump('tonga aty ap prepare curl');
 
         $ch = $this->ch;
         curl_setopt($ch, CURLOPT_URL, self::EXPO_API_URL);
