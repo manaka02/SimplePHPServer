@@ -14,7 +14,8 @@ class UserDataController extends SimpleRestController {
     function __construct(){
         parent::__construct(false);
     }
-    public function getUserData($account_id){
+    
+    public function getUserData($pseudo, $expo_token){
         $tokeninfo = $this->getTokenInfo();
         if(isset($tokeninfo->active) && $tokeninfo->active){
             $utils = new Util();
@@ -23,16 +24,17 @@ class UserDataController extends SimpleRestController {
             $statusCode = 200;
             try{
                 $connex = $services->initiateConnex();
-                $data = $services->getAccountData($connex, $account_id);
+                $data = $services->getUserData($connex, $pseudo, $expo_token);
                 $response = $data;
                 if(empty($data)){
                     $statusCode = 404;
                     $response = array("error"=>"Not found");
                 }
+                $services->closeConnex($connex);
             }catch (PDOException $e) {
                 $statusCode = 404;
+                var_dump($e);
                 $response = array("error"=>"Erreur de connexion");
-            }finally{
                 $services->closeConnex($connex);
             }
         }
@@ -78,12 +80,13 @@ class UserDataController extends SimpleRestController {
         }catch(PDOException $e){
             $statusCode = 405;
             $response = array("Error"=>$e);
-        }finally{
-            return array(
-                'statusCode'=>$statusCode,
-                'response'=>$response
-            );
         }
+        // finally{
+        //     return array(
+        //         'statusCode'=>$statusCode,
+        //         'response'=>$response
+        //     );
+        // }
     }
     public function saveAccount($user_account, $expo_token, $device_name, $password){
         $localResponse = $this->saveLocalAccount($user_account, $device_name, $expo_token);
@@ -97,22 +100,32 @@ class UserDataController extends SimpleRestController {
         echo $this->encodeJson($response);
     }
 
-    public function getAllDevices($id_account){
-        $utils = new Util();
-        $services = new ServicesDB();
-        $data = null;
-        $statusCode = 200;
-        try{
-            $connex = $services->initiateConnex();
-            $data = $services->getAllDevices($connex, $id_account);
-            $services->closeConnex($connex);
-        }catch (PDOException $e) {
-            $statusCode = 404;
-            $response = $responseJson;
+    public function getAllDevices($pseudo){
+        $tokeninfo = $this->getTokenInfo();
+        if(isset($tokeninfo->active) && $tokeninfo->active){
+            $utils = new Util();
+            $services = new ServicesDB();
+            $data = null;
+            $statusCode = 200;
+            echo 'tonga ato v';
+            try{
+                $connex = $services->initiateConnex();
+                $data = $services->getAllDevices($connex, $pseudo);
+                $response = $data;
+                $services->closeConnex($connex);
+            }catch (PDOException $e) {
+                $statusCode = 404;
+                $response = $responseJson;
+            }
+        }
+        else{
+            $statusCode = 401;
+            $response = array('error'=>'Unauthorized');
         }
         $requestContentType = $_SERVER['HTTP_ACCEPT'];
         $this ->setHttpHeaders($requestContentType, $statusCode);
-        $response = $this->encodeJson($data);
-        return $response;
+
+        $response = $this->encodeJson($response);
+        echo  $response;
     }
 }

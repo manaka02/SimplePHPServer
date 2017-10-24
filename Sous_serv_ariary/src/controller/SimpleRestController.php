@@ -114,7 +114,7 @@ class SimpleRestController{
             $utils = new Util();
             $params = "";
             $header = "";
-            $url = 'http://localhost/Oauth2_server/src/oauth/tokeninfo.php?access_token='.$token;
+            $url = 'http://auth.vola.mg/tokeninfo.php?access_token='.$token;
             $rep = $utils->sendCurl($url, 'get',array(),array() );  
             $responseJson = json_decode($rep); 
             return $responseJson;
