@@ -13,12 +13,6 @@
     }
 
     public function init($user, $userToken){
-        $data = [
-            'from' => 'Hasina',
-            'amount' => 25000,
-            'date' => "24-08-17 12:00:00",
-            'type' => 'Achat'
-        ];
         $dataJSON = json_encode($data);
         $message = 'Bonjour '.$user;
         $userData = array(
