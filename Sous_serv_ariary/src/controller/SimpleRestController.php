@@ -10,18 +10,18 @@ class SimpleRestController{
     private $httpVersion = "HTTP/1.1";
 
     function __construct($protected){
-        if($protected){
-            $tokeninfo = $this->getTokenInfo();
-            if(!$tokeninfo || (isset($tokeninfo->active) && !$tokeninfo->active)){
-                $statusCode = 401;
-                $responseJson = array('error'=>'Unauthorized','error_description'=>"The token is no longer valide or have been invalidated");
-                $requestContentType = $_SERVER['HTTP_ACCEPT'];
-                $this ->setHttpHeaders($requestContentType, $statusCode);
-                $response = $this->encodeJson($responseJson);
-                echo $response;
-                exit();
-            }   
-        }
+    	if($protected){
+	    	$tokeninfo = $this->getTokenInfo();
+	    	if(!$tokeninfo || (isset($tokeninfo->active) && !$tokeninfo->active)){
+	    		$statusCode = 401;
+	            $responseJson = array('error'=>'Unauthorized','error_description'=>"The token is no longer valide or have been invalidated");
+	            $requestContentType = $_SERVER['HTTP_ACCEPT'];
+		        $this ->setHttpHeaders($requestContentType, $statusCode);
+		        $response = $this->encodeJson($responseJson);
+		        echo $response;
+	    		exit();
+	    	}	
+    	}
     }
 
     public function setHttpHeaders($contentType, $statusCode){
