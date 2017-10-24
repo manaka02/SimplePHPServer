@@ -1,31 +1,49 @@
 <?php
-    
+    header("Access-Control-Allow-Origin: *");
     include_once('utils/Expo_util.php');
     include_once('utils/ServicesDB.php');
-  class NotificationController 
+    include_once 'controller/SimpleRestController.php';
+  class NotificationController extends SimpleRestController
   {
-    private $httpVersion = "HTTP/1.1";
-    
-    public function setHttpHeaders($statusCode){
-        $statusMessage = $this -> getHttpStatusMessage($statusCode);
-        header("Access-Control-Allow-Origin: *");
-        header($this->httpVersion. " ". $statusCode ." ". $statusMessage);
+
+    function __construct(){
+        parent::__construct(false);
     }
 
-    public function init($user, $userToken){
-        $dataJSON = json_encode($data);
-        $message = 'Bonjour '.$user;
-        $userData = array(
-          'userToken' => $userToken,
-          'message' => $message,
-          'title' => 'Synchronisation',
-          'data' => null
-        );
-        $dbservice = new ServicesDB();
-        $connex = $dbservice->initiateConnex();
-        $listUser = $dbservice->getAllDevices($connex,$user);
-        $this->notify([$userData]);
-        $dbservice->closeConnex($connex);
+    private $httpVersion = "HTTP/1.1";
+
+
+    public function init($pseudo, $code, $expToken, $idmobile){
+        $tokeninfo = $this->getTokenInfo();
+        if(isset($tokeninfo->active) && $tokeninfo->active){
+            $utils = new Util();
+            $services = new ServicesDB();
+            $data = null;
+            $statusCode = 200;
+            try{
+                $connex = $services->initiateConnex();
+                $data = $services->addNewAccount($connex,$pseudo,$code, $idmobile, $expToken);
+                $response = $data;
+                if(empty($data)){
+                    $statusCode = 404;
+                    $response = array("error"=>"Not found");
+                }
+                $services->closeConnex($connex);
+            }catch (PDOException $e) {
+                $statusCode = 404;
+                var_dump($e);
+                $response = array("error"=>"Erreur de connexion");
+                $services->closeConnex($connex);
+            }
+        }else{
+            $statusCode = 401;
+            $response = array('error'=>'Unauthorized','error_description'=>"The token is no longer valide or have been invalidated");
+        }
+        $requestContentType = $_SERVER['HTTP_ACCEPT'];
+        $this ->setHttpHeaders($requestContentType, $statusCode);
+
+        $response = $this->encodeJson($response);
+        echo  $response;
       }
 
     public function stopNotify($connex, $account_id){
@@ -173,50 +191,6 @@
         $this->notify($array);
       }
 
-      public function getHttpStatusMessage($statusCode){
-        $httpStatus = array(
-            100 => 'Continue',
-            101 => 'Switching Protocols',
-            200 => 'OK',
-            201 => 'Created',
-            202 => 'Accepted',
-            203 => 'Non-Authoritative Information',
-            204 => 'No Content',
-            205 => 'Reset Content',
-            206 => 'Partial Content',
-            300 => 'Multiple Choices',
-            301 => 'Moved Permanently',
-            302 => 'Found',
-            303 => 'See Other',
-            304 => 'Not Modified',
-            305 => 'Use Proxy',
-            306 => '(Unused)',
-            307 => 'Temporary Redirect',
-            400 => 'No sufficient funds or limits reached',
-            401 => 'Unauthorized',
-            402 => 'Payment Required',
-            403 => 'Forbidden',
-            404 => 'Not Found',
-            405 => 'Invalid input',
-            406 => 'Not Acceptable',
-            407 => 'Proxy Authentication Required',
-            408 => 'Request Timeout',
-            409 => 'Conflict',
-            410 => 'Gone',
-            411 => 'Length Required',
-            412 => 'Precondition Failed',
-            413 => 'Request Entity Too Large',
-            414 => 'Request-URI Too Long',
-            415 => 'Unsupported Media Type',
-            416 => 'Requested Range Not Satisfiable',
-            417 => 'Expectation Failed',
-            500 => 'Internal Server Error',
-            501 => 'Not Implemented',
-            502 => 'Bad Gateway',
-            503 => 'Service Unavailable',
-            504 => 'Gateway Timeout',
-            505 => 'HTTP Version Not Supported');
-        return ($httpStatus[$statusCode]) ? $httpStatus[$statusCode] : $httpStatus[500];
-    }
+      
   }
     

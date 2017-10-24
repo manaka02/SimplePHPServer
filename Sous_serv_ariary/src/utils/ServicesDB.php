@@ -80,15 +80,15 @@ class ServicesDB
     public function addNewAccount($connex,$pseudo,$code, $idmobile, $expToken)
     {
         try{
-            $stmt = $connex->prepare("INSERT INTO account (pseudo,code,  idmobile,exptoken,alias, connected) select :pseudo, :idmobile, :expToken,:alias, connected from account where pseudo = :pseudo and exptoken = :expToken 
-            ON DUPLICATE KEY UPDATE connected = 1");
+            $stmt = $connex->prepare("INSERT INTO account (pseudo,code,idmobile,exptoken,alias, connected) VALUES(:pseudo, :code,:idmobile, :expToken,:alias, 1) ON DUPLICATE KEY UPDATE    
+connected = 1");
                     $stmt->bindParam('pseudo', $pseudo);
                     $stmt->bindParam('code', $code);
                     $stmt->bindParam('alias', $pseudo);
                     $stmt->bindParam('idmobile', $idmobile);
                     $stmt->bindParam('expToken', $expToken);
                     $req = $stmt->execute();
-                    return $connex->lastInsertId(); 
+                    return $req;
         }catch(PDOExecption  $e){
             echo "Error!: " . $e->getMessage() . "</br>"; 
             throw $e;
@@ -123,8 +123,8 @@ class ServicesDB
        }
     }
 
-    public function getAllDevices($connex, $pseudo){
-        $sql = 'select * from account where pseudo = :pseudo and connected = 1';
+    public function getAllDevices($connex, $code){
+        $sql = 'select * from account where code = :code and connected = 1';
         $sth = $connex->prepare($sql);
         $sth->execute(array(':code' => $code));
         $response = $sth->fetchAll();
