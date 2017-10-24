@@ -6,6 +6,8 @@
  * Date: 03/07/2017
  * Time: 21:21
  */
+include_once('utils/Util.php');
+
 class SimpleRestController{
     private $httpVersion = "HTTP/1.1";
 
