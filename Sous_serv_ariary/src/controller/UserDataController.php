@@ -33,7 +33,6 @@ class UserDataController extends SimpleRestController {
                 $services->closeConnex($connex);
             }catch (PDOException $e) {
                 $statusCode = 404;
-                var_dump($e);
                 $response = array("error"=>"Erreur de connexion");
                 $services->closeConnex($connex);
             }

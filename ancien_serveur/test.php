@@ -25,7 +25,6 @@
         $header = $this->getHeaderDefault();
         $type = "POST";
         $params = array();
-        var_dump($usersData);
         
         foreach ($usersData as $user) {
           $oneUser = array(
@@ -37,7 +36,6 @@
           array_push($params, $oneUser);
         }
         $paramsJSON = json_encode($params);
-        var_dump($paramsJSON);
           try{
             $test = $utils->sendCurl($URL_EXPO,$type, $header, $paramsJSON);
             var_dump($test);
